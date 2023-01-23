@@ -1,0 +1,1 @@
+http-server ../ -p 5757 -o "/test/index.html"
