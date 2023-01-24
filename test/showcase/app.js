@@ -72,7 +72,7 @@ class App extends clemy.Application {
                 new clemy.Label({
                     caption : "Password :",
                     left : 10,
-                    top : 285,
+                    top : 290,
                     font : {
                         size : "14px",
                         bold : true
@@ -81,7 +81,7 @@ class App extends clemy.Application {
                 new clemy.TextBox({
                     placeholder : "password",
                     left : 120,
-                    top : 283,
+                    top : 288,
                     width : 150,
                     type : clemy.TextBox.PASSWORD,
                     font : {
@@ -91,7 +91,7 @@ class App extends clemy.Application {
                 new clemy.Label({
                     caption : "Birth Date :",
                     left : 10,
-                    top : 320,
+                    top : 330,
                     font : {
                         size : "14px",
                         bold : true
@@ -99,7 +99,7 @@ class App extends clemy.Application {
                 }),
                 new clemy.TextBox({
                     left : 120,
-                    top : 318,
+                    top : 328,
                     width : 150,
                     type : clemy.TextBox.DATE,
                     font : {
@@ -109,7 +109,7 @@ class App extends clemy.Application {
                 new clemy.Label({
                     caption : "Available At :",
                     left : 10,
-                    top : 355,
+                    top : 370,
                     font : {
                         size : "14px",
                         bold : true
@@ -117,9 +117,66 @@ class App extends clemy.Application {
                 }),
                 new clemy.TextBox({
                     left : 120,
-                    top : 353,
+                    top : 368,
                     width : 150,
                     type : clemy.TextBox.TIME,
+                    font : {
+                        size : "14px"
+                    }
+                }),
+                new clemy.Label({
+                    caption : "Gender :",
+                    left : 10,
+                    top : 405,
+                    font : {
+                        size : "14px",
+                        bold : true
+                    }
+                }),
+                new clemy.RadioButton({
+                    left : 120,
+                    top : 403,
+                    caption : "Male",
+                    name : "rbtMale",
+                    group : "gender",
+                    selected : true,
+                    font : {
+                        size : "14px"
+                    }
+                }),
+                new clemy.RadioButton({
+                    left : 220,
+                    top : 403,
+                    caption : "Female",
+                    name : "rbtFemale",
+                    group : "gender",
+                    font : {
+                        size : "14px"
+                    }
+                }),
+                new clemy.Label({
+                    caption : "Language :",
+                    left : 10,
+                    top : 440,
+                    font : {
+                        size : "14px",
+                        bold : true
+                    }
+                }),
+                new clemy.Checkbox({
+                    left : 120,
+                    top : 438,
+                    caption : "English",
+                    name : "cbxEng",
+                    checked : true,
+                    font : {
+                        size : "14px"
+                    }
+                }),
+                new clemy.Checkbox({
+                    left : 220,
+                    top : 438,
+                    caption : "Bahasa",
                     font : {
                         size : "14px"
                     }
@@ -128,18 +185,21 @@ class App extends clemy.Application {
                     caption : "Save",
                     name : "btn1",
                     left : 120,
-                    top : 450,
+                    top : 550,
                     size : clemy.Button.SIZE_SMALL,
                     onClick : (sender) => {
                         console.log("sender : ", sender);
                         console.log("this : ", this);
+
+                        this.getChild("cbxEng").caption = "Changed"
+                        this.getChild("cbxEng").checked = !this.getChild("cbxEng").checked
                     },
                 }),
                 new clemy.Button({
                     caption : "Delete",
                     name : "btn2",
                     left : 180,
-                    top : 450,
+                    top : 550,
                     mode : clemy.Button.ERROR,
                     size : clemy.Button.SIZE_SMALL,
                     onClick : "btnClick",
@@ -152,6 +212,12 @@ class App extends clemy.Application {
         console.log("button click by string this :", this)
 
         console.log("btn1 :", this.getChild("btn1"))
+
+        if (this.getChild("rbtMale").selected) {
+            console.log("Male Selected")
+        } else {
+            console.log("Female Selected")
+        }
     }
 }
 

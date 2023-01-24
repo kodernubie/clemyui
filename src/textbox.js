@@ -47,8 +47,6 @@ class TextBox extends Control {
         
         if (this._canvas != undefined)
             this._canvas.type = data
-
-        console.log(this._canvas.type)
     }
 
     get type() {

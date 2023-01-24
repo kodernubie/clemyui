@@ -394,6 +394,194 @@ class Application extends Container {
     }
 }
 
+class Button extends Control {
+  
+    static NORMAL = "normal"
+    static SUCCESS = "success"
+    static WARNING = "warning"
+    static ERROR = "error"
+
+    static SIZE_BIG = "big"
+    static SIZE_NORMAL = "normal"
+    static SIZE_SMALL = "small"
+
+    constructor(config = undefined) {
+        super(config);
+    }
+
+    set focusable(data) {
+        this._focusable = data;
+    }
+
+    get focusable() {
+        return this._focusable
+    }
+
+    set caption(data) {
+
+        this._caption = data;
+        
+        if (this._canvas != undefined)
+            this._canvas.innerHTML = data;
+    }
+
+    get caption() {
+        return this._caption
+    }
+
+    set mode(data) {
+
+        this._mode = data;
+
+        if (this._canvas != undefined) {
+
+            this._canvas.classList.remove(Button.SUCCESS);
+            this._canvas.classList.remove(Button.ERROR);
+            this._canvas.classList.remove(Button.WARNING);
+
+            if (data != Button.NORMAL)
+                this._canvas.classList.add(data);
+        }
+    }
+
+    get mode() {
+        return this._mode
+    }
+
+    set size(data) {
+
+        this._size = data;
+
+        if (this._canvas != undefined) {
+
+            switch (data) {
+                case Button.SIZE_BIG :
+                    this._canvas.style.fontSize = "1.5em"; 
+                    break
+                case Button.SIZE_NORMAL :
+                    this._canvas.style.fontSize = "1em"; 
+                    break
+                case Button.SIZE_SMALL :
+                    this._canvas.style.fontSize = "0.75em"; 
+                    break
+            }
+        }
+    }
+
+    get size() {
+        return this._size
+    }
+
+    setDefaultConf(config) {
+
+        super.setDefaultConf(config);
+
+        config["focusable"] = this.getConf("focusable", true);
+        config["caption"] = this.getConf("caption", "button");
+    }
+
+    doRender(parentCanvas) {
+
+        if (this.getConf("focusable")) {
+            this._canvas = document.createElement("button");
+        } else {
+            this._canvas = document.createElement("a");
+        }
+
+        this._canvas.onclick = () => this.emit(Event.CLICK, this);
+        this._canvas.onfocus = () => this.emit(Event.FOCUS, this);
+        this._canvas.onblur = () => this.emit(Event.LOSTFOCUS, this);
+
+        parentCanvas.appendChild(this._canvas);
+    }
+}
+
+class Checkbox extends Control {
+
+    constructor(config = undefined, childs = undefined) {
+        super(config, childs);
+
+        this._font = new Font();
+        this._font.on(Event.CHANGE, (sender, field) => {
+
+            if (this._canvas != undefined) {
+
+                this._canvas.style.font = sender.name;
+                this._canvas.style.fontSize = sender.size;
+                this._canvas.style.color = sender.color;
+
+                this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
+                this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
+
+                let decor = sender.underline ? "underline" : "";
+
+                decor += sender.strikethrough ? " line-through" : "";
+                
+                this._canvas.style.textDecoration = decor;
+            }
+        });
+    }
+
+    set caption(data) {
+
+        this._caption = data;
+        
+        if (this._canvas != undefined)
+            this._canvas.lastChild.innerHTML = data;
+    }
+
+    get caption() {
+        return this._caption
+    }
+
+    set font(data) {
+
+        if (data instanceof Font) {
+            this._font = data;
+            this._font.emit(Event.CHANGE, this._font, "all");
+        } else {
+            this._font.applyConfig(data);
+        } 
+    }
+
+    get font() {
+        return this._font
+    }
+
+    set checked(data) {
+
+        if (this._canvas != undefined) {
+            this._canvas.firstChild.checked = data;
+        }
+    }
+
+    get checked() {
+
+        if (this._canvas != undefined) {
+            return this._canvas.firstChild.checked
+        } else 
+            return false
+    }
+
+    doRender(parentCanvas) {
+
+        this._canvas = document.createElement("label");
+
+        let strChecked = "";
+        if (this.getConf("checked", false))
+            strChecked = "checked";
+
+        this._canvas.innerHTML = 
+        `<input type="checkbox" ` + strChecked + `>
+        <span class="checkable">` + this.getConf("caption", "") + `</span>`;
+        
+        let cbxCanvas = this._canvas.firstChild;
+        cbxCanvas.onchange = () => this.emit(Event.CHANGE, this);
+
+        parentCanvas.appendChild(this._canvas);
+    }
+}
+
 class Label extends Control {
 
     constructor(config = undefined) {
@@ -500,27 +688,30 @@ class Label extends Control {
     }
 }
 
-class Button extends Control {
-  
-    static NORMAL = "normal"
-    static SUCCESS = "success"
-    static WARNING = "warning"
-    static ERROR = "error"
+class RadioButton extends Control {
 
-    static SIZE_BIG = "big"
-    static SIZE_NORMAL = "normal"
-    static SIZE_SMALL = "small"
+    constructor(config = undefined, childs = undefined) {
+        super(config, childs);
 
-    constructor(config = undefined) {
-        super(config);
-    }
+        this._font = new Font();
+        this._font.on(Event.CHANGE, (sender, field) => {
 
-    set focusable(data) {
-        this._focusable = data;
-    }
+            if (this._canvas != undefined) {
 
-    get focusable() {
-        return this._focusable
+                this._canvas.style.font = sender.name;
+                this._canvas.style.fontSize = sender.size;
+                this._canvas.style.color = sender.color;
+
+                this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
+                this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
+
+                let decor = sender.underline ? "underline" : "";
+
+                decor += sender.strikethrough ? " line-through" : "";
+                
+                this._canvas.style.textDecoration = decor;
+            }
+        });
     }
 
     set caption(data) {
@@ -528,75 +719,71 @@ class Button extends Control {
         this._caption = data;
         
         if (this._canvas != undefined)
-            this._canvas.innerHTML = data;
+            this._canvas.lastChild.innerHTML = data;
     }
 
     get caption() {
         return this._caption
     }
 
-    set mode(data) {
+    set font(data) {
 
-        this._mode = data;
+        if (data instanceof Font) {
+            this._font = data;
+            this._font.emit(Event.CHANGE, this._font, "all");
+        } else {
+            this._font.applyConfig(data);
+        } 
+    }
+
+    get font() {
+        return this._font
+    }
+
+    set selected(data) {
 
         if (this._canvas != undefined) {
-
-            this._canvas.classList.remove(Button.SUCCESS);
-            this._canvas.classList.remove(Button.ERROR);
-            this._canvas.classList.remove(Button.WARNING);
-
-            if (data != Button.NORMAL)
-                this._canvas.classList.add(data);
+            this._canvas.firstChild.selected = data;
         }
     }
 
-    get mode() {
-        return this._mode
-    }
-
-    set size(data) {
-
-        this._size = data;
+    get selected() {
 
         if (this._canvas != undefined) {
+            return this._canvas.firstChild.checked
+        } else 
+            return false
+    }
 
-            switch (data) {
-                case Button.SIZE_BIG :
-                    this._canvas.style.fontSize = "1.5em"; 
-                    break
-                case Button.SIZE_NORMAL :
-                    this._canvas.style.fontSize = "1em"; 
-                    break
-                case Button.SIZE_SMALL :
-                    this._canvas.style.fontSize = "0.75em"; 
-                    break
-            }
+    set group(data) {
+
+        if (this._canvas != undefined) {
+            this._canvas.firstChild.name = data;
         }
     }
 
-    get size() {
-        return this._size
-    }
+    get group() {
 
-    setDefaultConf(config) {
-
-        super.setDefaultConf(config);
-
-        config["focusable"] = this.getConf("focusable", true);
-        config["caption"] = this.getConf("caption", "button");
+        if (this._canvas != undefined) {
+            return this._canvas.firstChild.name
+        } else 
+            return ""
     }
 
     doRender(parentCanvas) {
 
-        if (this.getConf("focusable")) {
-            this._canvas = document.createElement("button");
-        } else {
-            this._canvas = document.createElement("a");
-        }
+        this._canvas = document.createElement("label");
 
-        this._canvas.onclick = () => this.emit(Event.CLICK, this);
-        this._canvas.onfocus = () => this.emit(Event.FOCUS, this);
-        this._canvas.onblur = () => this.emit(Event.LOSTFOCUS, this);
+        let strChecked = "";
+        if (this.getConf("selected", false))
+            strChecked = "checked";
+        
+            this._canvas.innerHTML = 
+        `<input type="radio" name="` + this.getConf("group", "") + `" ` + strChecked + `>
+        <span class="checkable">` + this.getConf("caption", "") + `</span>`;
+        
+        let cbxCanvas = this._canvas.firstChild;
+        cbxCanvas.onchange = () => this.emit(Event.CHANGE, this);
 
         parentCanvas.appendChild(this._canvas);
     }
@@ -647,8 +834,6 @@ class TextBox extends Control {
         
         if (this._canvas != undefined)
             this._canvas.type = data;
-
-        console.log(this._canvas.type);
     }
 
     get type() {
@@ -703,4 +888,4 @@ class TextBox extends Control {
     }
 }
 
-export { Align, Application, Button, Color, Component, Container, Control, Event, EventEmitter, Font, Label, TextBox };
+export { Align, Application, Button, Checkbox, Color, Component, Container, Control, Event, EventEmitter, Font, Label, RadioButton, TextBox };
