@@ -1,5 +1,5 @@
-import { Control } from "./control.js";
-import { Event } from "./const.js"
+import { Control } from "./control";
+import { Event } from "./const"
 
 class Button extends Control {
   

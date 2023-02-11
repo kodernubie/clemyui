@@ -1,6 +1,6 @@
-import { Control } from "./control.js";
-import { Event } from "./const.js";
-import { Font } from "./font.js";
+import { Control } from "./control";
+import { Event } from "./const";
+import { Font } from "./font";
 
 class RadioButton extends Control {
 
@@ -8,24 +8,26 @@ class RadioButton extends Control {
         super(config, childs)
 
         this._font = new Font()
-        this._font.on(Event.CHANGE, (sender, field) => {
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender))
+    }
 
-            if (this._canvas != undefined) {
+    applyFont(sender) {
 
-                this._canvas.style.font = sender.name
-                this._canvas.style.fontSize = sender.size
-                this._canvas.style.color = sender.color
+        if (this._canvas != undefined) {
 
-                this._canvas.style.fontWeight = sender.bold ? "bold" : "normal"
-                this._canvas.style.fontStyle = sender.italic ? "italic" : "normal"
+            this._canvas.style.font = sender.name
+            this._canvas.style.fontSize = sender.size
+            this._canvas.style.color = sender.color
 
-                let decor = sender.underline ? "underline" : ""
+            this._canvas.style.fontWeight = sender.bold ? "bold" : "normal"
+            this._canvas.style.fontStyle = sender.italic ? "italic" : "normal"
 
-                decor += sender.strikethrough ? " line-through" : ""
-                
-                this._canvas.style.textDecoration = decor
-            }
-        })
+            let decor = sender.underline ? "underline" : ""
+
+            decor += sender.strikethrough ? " line-through" : ""
+            
+            this._canvas.style.textDecoration = decor
+        }
     }
 
     set caption(data) {
@@ -44,6 +46,7 @@ class RadioButton extends Control {
 
         if (data instanceof Font) {
             this._font = data
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender))
             this._font.emit(Event.CHANGE, this._font, "all")
         } else {
             this._font.applyConfig(data)

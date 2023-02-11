@@ -232,6 +232,80 @@ class Font extends Component {
     }
 }
 
+class Border extends Component {
+
+    static MODE_BOX = "box"
+    static MODE_NONE = "none"
+
+    constructor(config) {
+
+        super(config);
+    }
+
+    set mode(data) {
+        this._mode = data;
+        this.emit(Event.CHANGE, this, "color"); 
+    }
+
+    get mode() {
+        return this._mode
+    }
+ 
+    set color(data) {
+        this._color = data;
+        this.emit(Event.CHANGE, this, "color");
+    }
+    
+    get color() { 
+        return this._color
+    }
+
+    set weight(data) {
+        this._weight = data;
+        this.emit(Event.CHANGE, this, "weight");
+    }
+    
+    get weight() { 
+        return this._weight
+    }
+
+    set left(data) {
+        this._left = data;
+        this.emit(Event.CHANGE, this, "left");
+    }
+
+    get left() { 
+        return this._left
+    }
+
+    set top(data) {
+        this._top = data;
+        this.emit(Event.CHANGE, this, "top");
+    }
+
+    get top() { 
+        return this._top
+    }
+
+    set right(data) {
+        this._right = data;
+        this.emit(Event.CHANGE, this, "right");
+    }
+
+    get right() { 
+        return this._right
+    }
+
+    set bottom(data) {
+        this._bottom = data;
+        this.emit(Event.CHANGE, this, "bottom");
+    }
+
+    get bottom() { 
+        return this._bottom
+    }
+}
+
 class Control extends Component {
 
     _canvas = undefined
@@ -289,6 +363,30 @@ class Control extends Component {
             this._canvas.style.top = data;
         }
     }
+    
+    set width(data) {
+
+        this._width = data;
+        
+        if (this._canvas != undefined)
+            this._canvas.style.width = data;
+    }
+
+    get width() {
+        return this._width
+    } 
+
+    set height(data) {
+        this._height = data;
+        
+        if (this._canvas != undefined)
+            this._canvas.style.height = data;
+    }
+
+    get height() {
+        return this._height
+    }
+
     
     render() {
         
@@ -502,24 +600,26 @@ class Checkbox extends Control {
         super(config, childs);
 
         this._font = new Font();
-        this._font.on(Event.CHANGE, (sender, field) => {
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
+    }
 
-            if (this._canvas != undefined) {
+    applyFont(sender) {
 
-                this._canvas.style.font = sender.name;
-                this._canvas.style.fontSize = sender.size;
-                this._canvas.style.color = sender.color;
+        if (this._canvas != undefined) {
 
-                this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
-                this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
+            this._canvas.style.font = sender.name;
+            this._canvas.style.fontSize = sender.size;
+            this._canvas.style.color = sender.color;
 
-                let decor = sender.underline ? "underline" : "";
+            this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
+            this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
 
-                decor += sender.strikethrough ? " line-through" : "";
-                
-                this._canvas.style.textDecoration = decor;
-            }
-        });
+            let decor = sender.underline ? "underline" : "";
+
+            decor += sender.strikethrough ? " line-through" : "";
+            
+            this._canvas.style.textDecoration = decor;
+        }
     }
 
     set caption(data) {
@@ -538,6 +638,7 @@ class Checkbox extends Control {
 
         if (data instanceof Font) {
             this._font = data;
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
             this._font.emit(Event.CHANGE, this._font, "all");
         } else {
             this._font.applyConfig(data);
@@ -588,24 +689,26 @@ class Label extends Control {
         super(config);
 
         this._font = new Font();
-        this._font.on(Event.CHANGE, (sender, field) => {
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
+    }
 
-            if (this._canvas != undefined) {
+    applyFont(sender) {
 
-                this._canvas.style.font = sender.name;
-                this._canvas.style.fontSize = sender.size;
-                this._canvas.style.color = sender.color;
+        if (this._canvas != undefined) {
 
-                this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
-                this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
+            this._canvas.style.font = sender.name;
+            this._canvas.style.fontSize = sender.size;
+            this._canvas.style.color = sender.color;
 
-                let decor = sender.underline ? "underline" : "";
+            this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
+            this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
 
-                decor += sender.strikethrough ? " line-through" : "";
-                
-                this._canvas.style.textDecoration = decor;
-            }
-        });
+            let decor = sender.underline ? "underline" : "";
+
+            decor += sender.strikethrough ? " line-through" : "";
+            
+            this._canvas.style.textDecoration = decor;
+        }
     }
 
     set caption(data) {
@@ -624,6 +727,7 @@ class Label extends Control {
 
         if (data instanceof Font) {
             this._font = data;
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
             this._font.emit(Event.CHANGE, this._font, "all");
         } else {
             this._font.applyConfig(data);
@@ -633,18 +737,6 @@ class Label extends Control {
     get font() {
         return this._font
     }
-
-    set width(data) {
-
-        this._width = data;
-        
-        if (this._canvas != undefined)
-            this._canvas.style.width = data;
-    }
-
-    get width() {
-        return this._width
-    } 
 
     set height(data) {
         this._height = data;
@@ -694,24 +786,26 @@ class RadioButton extends Control {
         super(config, childs);
 
         this._font = new Font();
-        this._font.on(Event.CHANGE, (sender, field) => {
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
+    }
 
-            if (this._canvas != undefined) {
+    applyFont(sender) {
 
-                this._canvas.style.font = sender.name;
-                this._canvas.style.fontSize = sender.size;
-                this._canvas.style.color = sender.color;
+        if (this._canvas != undefined) {
 
-                this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
-                this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
+            this._canvas.style.font = sender.name;
+            this._canvas.style.fontSize = sender.size;
+            this._canvas.style.color = sender.color;
 
-                let decor = sender.underline ? "underline" : "";
+            this._canvas.style.fontWeight = sender.bold ? "bold" : "normal";
+            this._canvas.style.fontStyle = sender.italic ? "italic" : "normal";
 
-                decor += sender.strikethrough ? " line-through" : "";
-                
-                this._canvas.style.textDecoration = decor;
-            }
-        });
+            let decor = sender.underline ? "underline" : "";
+
+            decor += sender.strikethrough ? " line-through" : "";
+            
+            this._canvas.style.textDecoration = decor;
+        }
     }
 
     set caption(data) {
@@ -730,6 +824,7 @@ class RadioButton extends Control {
 
         if (data instanceof Font) {
             this._font = data;
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
             this._font.emit(Event.CHANGE, this._font, "all");
         } else {
             this._font.applyConfig(data);
@@ -789,6 +884,240 @@ class RadioButton extends Control {
     }
 }
 
+class ItemList extends EventEmitter {
+
+    _listSet = new Set()
+
+    add(item) {
+
+        this._listSet.add(item);
+        item.on(Event.CHANGE, () => {
+            this.emit(Event.CHANGE, this, item);
+        });
+    }
+
+    del(item) {
+
+        this._listSet.delete(item);
+        this.emit(Event.CHANGE, this);
+    }
+
+    clear() {
+        this._listSet.clear();
+        this.emit(Event.CHANGE, this);
+    }
+
+    get(index) {
+        let i = 0;
+        let ret = undefined;
+
+        for (var item of this._listSet) {
+            if (i == index) {
+
+                ret = item;
+                break
+            } else
+                i++;
+        }
+
+        return ret
+    }
+}
+
+class SelectItem extends EventEmitter {
+
+    constructor(code, caption) {
+
+        super();
+
+        this._code = code;
+        this._caption = caption;
+    }
+
+    get code() {
+        return this._code
+    }
+
+    set code(data) {
+        this._code = data;
+        this.emit(Event.CHANGE, this, "code");
+    }
+
+    get caption() {
+        return this._caption
+    }
+
+    set caption(data) {
+        this._caption = data;
+        this.emit(Event.CHANGE, this, "caption");
+    }
+}
+
+class SelectItemList extends ItemList {
+
+    addItem(code, caption) {
+
+        this.add(new SelectItem(code, caption));
+    }
+
+    delItem(code) {
+
+        for (var item of this._listSet) {
+
+            if (item.code == code) {
+
+                this.del(item);
+                break       
+            }
+        }
+    }
+
+    setItems(items) {
+
+        this.pauseEvent();
+        this.clear();
+        
+        for (var item of items) {
+
+            this.add(new SelectItem(item["code"], item["caption"]));
+        }
+
+        this.resumeEvent();
+        this.emit(Event.CHANGE, this);
+    }
+
+    indexOf(code) {
+
+        let ret = -1;
+        let i = 0;
+
+        for (var item of this._listSet) {
+        
+            if (item.code == code) {
+
+                ret = i;
+                break
+            } else
+                i++;
+        }
+
+        return ret
+    }
+}
+
+class Select extends Control {
+
+    constructor(config, child) {
+        super(config, child);
+
+        this._font = new Font();
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
+
+        this._listItem = new SelectItemList();
+        this._listItem.on(Event.CHANGE, (sender) => this.renderItem(sender));
+
+    }    
+
+    applyFont(sender) {
+
+        if (this._canvas != undefined) {
+
+            this._canvas.style.font = sender.name;
+            this._canvas.style.fontSize = sender.size;
+            this._canvas.style.color = sender.color;
+        }
+    }
+
+    renderItem() {
+
+        if (this._canvas != undefined && this._listItem != undefined) {
+
+            let strOption = "";
+
+            for (var item of this._listItem._listSet) {
+
+                strOption += "<option value=\"" +  item.code + "\">" + item.caption + "</option>";
+            }
+
+            this._canvas.innerHTML = strOption;
+        }
+    }
+
+    get selectedItem() {
+
+        let ret = undefined; 
+        
+        if (this._canvas != undefined && this._listItem != undefined)
+            ret = this._listItem.get(this._canvas.selectedIndex);
+
+        return ret 
+    }
+
+    set selectedItem(data) {
+
+        if (this._canvas != undefined && this._listItem != undefined) {
+
+            let idx = this._listItem.indexOf(data);
+
+            if (idx >= 0)
+                this._canvas.selectedIndex = idx;
+        } 
+    }
+
+    get selectedIndex() {
+        if (this._canvas != undefined)
+            return this._canvas.selectedIndex
+        else
+            return -1
+    }
+
+    set selectedIndex(index) {
+
+        if (this._canvas != undefined)
+            this._canvas.selectedIndex = index;
+    }
+
+    get items() {
+
+        return this._listItem
+    }
+
+    set items(data) {
+
+        if (data instanceof SelectItemList) {
+
+            this._listItem = data;
+            this._listItem.on(Event.CHANGE, (sender, field) => this.renderItem());
+            this._listItem.emit(Event.CHANGE, this._listItem);
+        } else {
+            this._listItem.setItems(data);
+        }
+    }
+
+    set font(data) {
+
+        if (data instanceof Font) {
+            this._font = data;
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
+            this._font.emit(Event.CHANGE, this._font, "all");
+        } else {
+            this._font.applyConfig(data);
+        } 
+    }
+
+    doRender(parentCanvas) {
+
+        this._canvas = document.createElement("select");
+        this.renderItem();
+
+        this._canvas.onchange = () => this.emit(Event.CHANGE, this);
+        this._canvas.onfocus = () => this.emit(Event.FOCUS, this);
+        this._canvas.onblur = () => this.emit(Event.LOSTFOCUS, this);
+
+        parentCanvas.appendChild(this._canvas);
+    }
+}
+
 class TextBox extends Control {
 
     static TEXT = "text"
@@ -803,21 +1132,24 @@ class TextBox extends Control {
         super(config, child);
 
         this._font = new Font();
-        this._font.on(Event.CHANGE, (sender, field) => {
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
+    }
 
-            if (this._canvas != undefined) {
+    applyFont(sender) {
 
-                this._canvas.style.font = sender.name;
-                this._canvas.style.fontSize = sender.size;
-                this._canvas.style.color = sender.color;
-            }
-        });
+        if (this._canvas != undefined) {
+
+            this._canvas.style.font = sender.name;
+            this._canvas.style.fontSize = sender.size;
+            this._canvas.style.color = sender.color;
+        }
     }
 
     set font(data) {
 
         if (data instanceof Font) {
             this._font = data;
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender));
             this._font.emit(Event.CHANGE, this._font, "all");
         } else {
             this._font.applyConfig(data);
@@ -838,29 +1170,6 @@ class TextBox extends Control {
 
     get type() {
         return this._type
-    }
-
-    set width(data) {
-
-        this._width = data;
-        
-        if (this._canvas != undefined)
-            this._canvas.style.width = data;
-    }
-
-    get width() {
-        return this._width
-    } 
-
-    set height(data) {
-        this._height = data;
-        
-        if (this._canvas != undefined)
-            this._canvas.style.height = data;
-    }
-
-    get height() {
-        return this._height
     }
 
     set placeholder(data) {
@@ -888,4 +1197,4 @@ class TextBox extends Control {
     }
 }
 
-export { Align, Application, Button, Checkbox, Color, Component, Container, Control, Event, EventEmitter, Font, Label, RadioButton, TextBox };
+export { Align, Application, Border, Button, Checkbox, Color, Component, Container, Control, Event, EventEmitter, Font, Label, RadioButton, Select, SelectItem, SelectItemList, TextBox };

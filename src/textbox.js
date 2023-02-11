@@ -1,6 +1,6 @@
-import { Control } from "./control.js";
-import { Event } from "./const.js"
-import { Font } from "./font.js"
+import { Control } from "./control";
+import { Event } from "./const"
+import { Font } from "./font"
 
 class TextBox extends Control {
 
@@ -16,21 +16,24 @@ class TextBox extends Control {
         super(config, child)
 
         this._font = new Font()
-        this._font.on(Event.CHANGE, (sender, field) => {
+        this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender))
+    }
 
-            if (this._canvas != undefined) {
+    applyFont(sender) {
 
-                this._canvas.style.font = sender.name
-                this._canvas.style.fontSize = sender.size
-                this._canvas.style.color = sender.color
-            }
-        })
+        if (this._canvas != undefined) {
+
+            this._canvas.style.font = sender.name
+            this._canvas.style.fontSize = sender.size
+            this._canvas.style.color = sender.color
+        }
     }
 
     set font(data) {
 
         if (data instanceof Font) {
             this._font = data
+            this._font.on(Event.CHANGE, (sender, field) => this.applyFont(sender))
             this._font.emit(Event.CHANGE, this._font, "all")
         } else {
             this._font.applyConfig(data)
@@ -51,29 +54,6 @@ class TextBox extends Control {
 
     get type() {
         return this._type
-    }
-
-    set width(data) {
-
-        this._width = data
-        
-        if (this._canvas != undefined)
-            this._canvas.style.width = data
-    }
-
-    get width() {
-        return this._width
-    } 
-
-    set height(data) {
-        this._height = data
-        
-        if (this._canvas != undefined)
-            this._canvas.style.height = data
-    }
-
-    get height() {
-        return this._height
     }
 
     set placeholder(data) {

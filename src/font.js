@@ -1,5 +1,5 @@
-import { Component } from "./component.js"
-import { Event } from "./const.js"
+import { Component } from "./component"
+import { Event } from "./const"
 
 class Font extends Component {
 

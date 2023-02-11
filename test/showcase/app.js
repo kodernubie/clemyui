@@ -181,6 +181,33 @@ class App extends clemy.Application {
                         size : "14px"
                     }
                 }),
+                new clemy.Label({
+                    caption : "Nationality :",
+                    left : 10,
+                    top : 475,
+                    font : {
+                        size : "14px",
+                        bold : true
+                    }
+                }),
+                new clemy.Select({
+                    left : 120,
+                    top : 473,
+                    width : 200,
+                    name : "slcNationality",
+                    font : {
+                        size : "14px"
+                    },
+                    items : [
+                        { code : "ID", caption : "Indonesia"},
+                        { code : "US", caption : "United State of America"}
+                    ],
+                    onChange : () => {
+                        console.log("selected : ", 
+                            this.getChild("slcNationality").selectedItem.code,  
+                            this.getChild("slcNationality").selectedItem.caption)
+                    }
+                }),
                 new clemy.Button({
                     caption : "Save",
                     name : "btn1",

@@ -1,4 +1,4 @@
-import { EventEmitter } from "./eventEmitter.js";
+import { EventEmitter } from "./eventEmitter";
 
 class Component extends EventEmitter {
     

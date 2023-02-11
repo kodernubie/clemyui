@@ -1,4 +1,4 @@
-import { Control } from "./control.js";
+import { Control } from "./control";
 
 class Container extends Control {
 

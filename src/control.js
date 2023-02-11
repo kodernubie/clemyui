@@ -1,4 +1,4 @@
-import { Component } from "./component.js";
+import { Component } from "./component";
 
 class Control extends Component {
 
@@ -57,6 +57,30 @@ class Control extends Component {
             this._canvas.style.top = data
         }
     }
+    
+    set width(data) {
+
+        this._width = data
+        
+        if (this._canvas != undefined)
+            this._canvas.style.width = data
+    }
+
+    get width() {
+        return this._width
+    } 
+
+    set height(data) {
+        this._height = data
+        
+        if (this._canvas != undefined)
+            this._canvas.style.height = data
+    }
+
+    get height() {
+        return this._height
+    }
+
     
     render() {
         
